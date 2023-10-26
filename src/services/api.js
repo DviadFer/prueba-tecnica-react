@@ -14,5 +14,5 @@ export const fetchPodcastDetails = (podcastId) => {
 export const fetchPodcastEpisodes = (podcastId) => {
   return fetch('https://itunes.apple.com/lookup?id=${podcastId}&entity=podcastEpisode&limit=9')
     .then(response => response.json())
-    .then(data => data.results.slice(1)); // El primer resultado suele ser el podcast mismo, por lo que usamos slice para obtener solo episodios
+    .then(data => data.results.slice(1)); // El primer es el podcast mismo, uso slice para obtener solo episodios
 };
