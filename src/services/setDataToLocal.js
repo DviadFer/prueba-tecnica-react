@@ -1,28 +1,57 @@
-import { fetchTopPodcasts } from './api';
+import { fetchTopPodcasts, fetchPodcastDetails } from './api';
 
-//Funcion para comprobar el tiempo transcurrido desde el ultimo fetch de podcasts y guardar la info. en local storage.
+//Funciones para comprobar el tiempo transcurrido desde el ultimo fetch de podcasts y guardar la info. en local storage.
 const fetchData = async (setPodcasts, setLoading) => {
-    const lastFetchTime = localStorage.getItem('lastFetchTime');
     const now = new Date().getTime();
+    const cachedData = localStorage.getItem('podcastsData');
+    let isDataFresh = false;
 
-    if (lastFetchTime && (now - lastFetchTime) < 86400000) {
-        const cachedPodcasts = localStorage.getItem('podcasts');
-        if (cachedPodcasts) {
-            setPodcasts(JSON.parse(cachedPodcasts));
+    if (cachedData) {
+        const { lastFetchTime, podcasts } = JSON.parse(cachedData);
+        if ((now - lastFetchTime) < 86400000) {  // 24 horas en milisegundos
+            setPodcasts(podcasts);
             setLoading(false);
-            return;
+            isDataFresh = true;
         }
     }
 
-    try {
-        const podcastData = await fetchTopPodcasts();
-        localStorage.setItem('podcasts', JSON.stringify(podcastData));
-        localStorage.setItem('lastFetchTime', now.toString());
-        setPodcasts(podcastData);
-    } catch (error) {
-        console.error("Error fetching podcasts:", error);
+    if (!isDataFresh) {
+        try {
+            const podcastData = await fetchTopPodcasts();
+            const dataToStore = {
+                lastFetchTime: now,
+                podcasts: podcastData
+            };
+            localStorage.setItem('podcastsData', JSON.stringify(dataToStore));
+            setPodcasts(podcastData);
+        } catch (error) {
+            console.error("Error fetching podcasts:", error);
+        }
+        setLoading(false);
     }
-    setLoading(false);
 };
 
+const fetchPodcastData = async (podcastId) => {
+    const now = new Date().getTime();
+    const cachedPodcastData = localStorage.getItem(`podcast_${podcastId}`);
+  
+    if (cachedPodcastData) {
+      const { lastFetch, data } = JSON.parse(cachedPodcastData);
+      if (now - lastFetch < 24 * 60 * 60 * 1000) {
+        return data; // Datos frescos, retornar desde el cache
+      }
+    }
+  
+    // Datos no encontrados o caducados, solicitar nuevos datos
+    const { details, episodes } = await fetchPodcastDetails(podcastId);
+    const newData = {
+      ...details,
+      episodes: episodes
+    };
+    localStorage.setItem(`podcast_${podcastId}`, JSON.stringify({ lastFetch: now, data: newData }));
+  
+    return newData;
+  };
+
+export { fetchPodcastData };
 export default fetchData;
