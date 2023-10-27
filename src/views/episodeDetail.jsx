@@ -1,19 +1,37 @@
-const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import PodcastSidebar from './components/podcastSidebar';
+import EpisodeInfoCard from './components/episodeInfoCard';
 
-export const fetchTopPodcasts = () => {
-  return fetch(`${CORS_PROXY}https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json`)
-    .then(response => response.json())
-    .then(data => data.feed.entry);
+const EpisodeDetail = ({ setLoading }) => {
+    const { podcastId, episodeId } = useParams();
+    const [episode, setEpisode] = useState(null);
+    const [podcast, setPodcast] = useState(null);
+
+    useEffect(() => {
+        setLoading(true);
+        const cachedPodcastData = localStorage.getItem(`podcast_${podcastId}`);
+        if (cachedPodcastData) {
+            const { data } = JSON.parse(cachedPodcastData);
+            setPodcast(data);
+            const foundEpisode = data.episodes.find(ep => ep.trackId === Number(episodeId));
+            if (foundEpisode) {
+                setEpisode(foundEpisode);
+            }
+        }
+        setLoading(false);
+    }, [podcastId, episodeId, setLoading]);
+
+    if (!episode) {
+        return <div>Cargando detalles del episodio...</div>;
+    }
+
+    return (
+        <section className="episode-detail-view">
+            <PodcastSidebar podcast={podcast} />
+            <EpisodeInfoCard episode={episode} />
+        </section>
+    );
 };
 
-export const fetchPodcastDetails = (podcastId) => {
-  return fetch(`${CORS_PROXY}https://itunes.apple.com/lookup?id=${podcastId}`)
-    .then(response => response.json())
-    .then(data => data.results[0]);  // Prueba inicial
-};
-
-export const fetchPodcastEpisodes = (podcastId) => {
-  return fetch(`${CORS_PROXY}https://itunes.apple.com/lookup?id=${podcastId}&entity=podcastEpisode&limit=9`)
-    .then(response => response.json())
-    .then(data => data.results.slice(1)); // El primer resultado es el podcast mismo, uso slice para obtener solo episodios
-};
+export default EpisodeDetail;
