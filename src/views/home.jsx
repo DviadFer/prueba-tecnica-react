@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import SearchBar from './components/searchBar';
 import PodcastList from './components/PodcastList';
-import fetchData from '../services/setDataToLocal';
+import { fetchData } from '../services/setDataToLocal';
 
-function Home() {
+function Home({ setLoading }) {
     const [podcasts, setPodcasts] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
 
     useEffect(() => {
@@ -19,13 +18,11 @@ function Home() {
         podcast["im:artist"].label.toLowerCase().includes(searchLower)
     );
 
-    if (loading) return <div>Loading...</div>;
-
     return (
-        <div>
+        <section className='home-view'>
             <SearchBar setSearch={setSearch} resultCount={filteredPodcasts.length} />
             <PodcastList podcasts={filteredPodcasts} />
-        </div>
+        </section>
     );
 }
 

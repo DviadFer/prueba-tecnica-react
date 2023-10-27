@@ -1,5 +1,6 @@
 const SearchBar = ({ setSearch, resultCount }) => (
-    <div>
+    <div className="search-bar">
+        <div className="result-counter">{resultCount}</div>
         <form>
             <input 
                 type="text"
@@ -7,7 +8,6 @@ const SearchBar = ({ setSearch, resultCount }) => (
                 placeholder='Buscar podcast...'
             />
         </form>
-        <h2>{resultCount} Resultados</h2>
     </div>
 );
 

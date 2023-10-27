@@ -4,12 +4,12 @@ import PodcastSidebar from './components/podcastSidebar';
 import EpisodeList from './components/episodeList';
 import { fetchPodcastData } from '../services/setDataToLocal';
 
-function PodcastDetail() {
+function PodcastDetail({ setLoading }) {
   const { podcastId } = useParams();
   const [podcast, setPodcast] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true)
     const fetchData = async () => {
       try {
         const data = await fetchPodcastData(podcastId);
@@ -21,21 +21,17 @@ function PodcastDetail() {
     };
 
     fetchData();
-  }, [podcastId]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  }, [podcastId, setLoading]);
 
   if (!podcast) {
-    return <div>Podcast no encontrado</div>;
+    return <div>Cargando detalles del podcast...</div>;
   }
 
   return (
-    <div style={{ display: 'flex' }}>
+    <section className='podcast-detail-view'>
       <PodcastSidebar podcast={podcast} />
       <EpisodeList episodes={podcast.episodes} podcastId={podcastId} />
-    </div>
+    </section>
   );
 }
 

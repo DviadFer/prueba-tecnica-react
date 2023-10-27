@@ -14,13 +14,13 @@ const EpisodeList = ({ episodes, podcastId }) => {
     };
 
   return (
-    <main style={{ flex: 1, padding: '20px' }}>
-      <h1>Episodios</h1>
+    <div className='episode-list'>
+      <h1>Episodios: {episodes.length}</h1>
       <table>
         <thead>
           <tr>
             <th>Título</th>
-            <th>Fecha de Publicación</th>
+            <th>Fecha</th>
             <th>Duración</th>
           </tr>
         </thead>
@@ -38,7 +38,7 @@ const EpisodeList = ({ episodes, podcastId }) => {
           ))}
         </tbody>
       </table>
-    </main>
+    </div>
   );
 };
 
