@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SearchBar from './components/searchBar';
-import PodcastList from './components/PodcastList';
+import PodcastList from './components/podcastList';
 import { fetchData } from '../services/setDataToLocal';
 
 function Home({ setLoading }) {
