@@ -14,6 +14,10 @@ Antes de comenzar, asegúrate de tener instalado:
 - [Node.js](https://nodejs.org/) (Preferiblemente la última versión LTS)
 - Gestor de paquetes como [npm](https://www.npmjs.com/) (generalmente viene con Node.js)
 
+> 🚨 **IMPORTANTE** 🚨 Es necesario activar el siguiente servicio para poder acceder a recursos externos que no proveen JSONP ni
+cabeceras CORS y que la aplicación funcione correctamente. Visitar enlace <https://cors-anywhere.herokuapp.com/> y pulsar en "Request temporary access". Necesario **también para visualizar la app desde Vercel.**
+
+
 ## Instalación
 
 ### Clonar el Repositorio
